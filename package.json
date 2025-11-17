@@ -1,6 +1,6 @@
 {
   "name": "youtube-video-card",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A custom card for Home Assistant that allows you to embed and play YouTube videos and playlists directly in your dashboard",
   "main": "dist/youtube-video-card.js",
   "repository": {

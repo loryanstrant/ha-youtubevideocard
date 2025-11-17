@@ -1,4 +1,4 @@
-// YouTube Video Card for Home Assistant v1.0.1
+// YouTube Video Card for Home Assistant v1.0.2
 class YouTubeVideoCard extends HTMLElement {
   constructor() {
     super();
@@ -226,4 +226,4 @@ class YouTubeVideoCard extends HTMLElement {
 }
 
 customElements.define('youtube-video-card', YouTubeVideoCard);
-console.log('YouTube Video Card v1.0.1 loaded');
+console.log('YouTube Video Card v1.0.2 loaded');
