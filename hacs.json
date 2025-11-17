@@ -1,0 +1,7 @@
+{
+  "name": "YouTube Video Card",
+  "content_in_root": false,
+  "filename": "youtube-video-card.js",
+  "render_readme": true,
+  "homeassistant": "2023.4.0"
+}

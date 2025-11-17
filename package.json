@@ -1,0 +1,27 @@
+{
+  "name": "youtube-video-card",
+  "version": "1.0.0",
+  "description": "A Home Assistant custom card for playing YouTube videos and playlists",
+  "main": "dist/youtube-video-card.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loryanstrant/ha-youtubevideocard.git"
+  },
+  "keywords": [
+    "homeassistant",
+    "custom-card",
+    "youtube",
+    "video",
+    "playlist",
+    "hacs"
+  ],
+  "author": "Loryan Strant",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loryanstrant/ha-youtubevideocard/issues"
+  },
+  "homepage": "https://github.com/loryanstrant/ha-youtubevideocard#readme"
+}
