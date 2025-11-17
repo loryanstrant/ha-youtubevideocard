@@ -1,200 +1,104 @@
-/**
- * YouTube Video Card for Home Assistant
- * Supports both individual videos and playlists using the YouTube IFrame API
- * 
- * @version 1.0.0
- */
+// YouTube Video Card for Home Assistant v1.0.1
 class YouTubeVideoCard extends HTMLElement {
   constructor() {
     super();
+    this.attachShadow({ mode: 'open' });
     this._config = {};
     this._player = null;
-    this._playerReady = false;
-    this._playerId = `youtube-player-${Math.random().toString(36).substr(2, 9)}`;
+    this._apiLoaded = false;
   }
+
+  static getStubConfig() {
+    return {
+      type: 'custom:youtube-video-card',
+      video_id: 'dQw4w9WgXcQ',
+      autoplay: false,
+      controls: true
+    };
+  }
+
+  setConfig(config) {
+    this._config = {
+      video_id: config.video_id || '',
+      playlist_id: config.playlist_id || '',
+      autoplay: config.autoplay !== undefined ? config.autoplay : false,
+      controls: config.controls !== undefined ? config.controls : true,
+      loop: config.loop !== undefined ? config.loop : false,
+      mute: config.mute !== undefined ? config.mute : false,
+      start_time: config.start_time || 0,
+      end_time: config.end_time || 0,
+      modestbranding: config.modestbranding !== undefined ? config.modestbranding : false,
+      rel: config.rel !== undefined ? config.rel : false,
+      showinfo: config.showinfo !== undefined ? config.showinfo : true,
+      fs: config.fs !== undefined ? config.fs : true,
+      cc_load_policy: config.cc_load_policy || 0,
+      iv_load_policy: config.iv_load_policy !== undefined ? config.iv_load_policy : 1,
+      color: config.color || 'red',
+      title: config.title || '',
+      aspect_ratio: config.aspect_ratio || '16:9'
+    };
+    
+    if (this.isConnected) {
+      this._render();
+      this._loadYouTubeAPI();
+    }
+  }
+
+  connectedCallback() {
+    if (this._config.video_id || this._config.playlist_id) {
+      this._render();
+      this._loadYouTubeAPI();
+    }
+  }
+
+  disconnectedCallback() {
+    if (this._player) {
+      this._player.destroy();
+      this._player = null;
+    }
+  }
+
   set hass(hass) {
     this._hass = hass;
   }
-  setConfig(config) {
-    if (!config.video_id && !config.playlist_id) {
-      throw new Error('You need to define either video_id or playlist_id');
-    }
-    this._config = {
-      title: config.title || 'YouTube Video',
-      video_id: config.video_id || '',
-      playlist_id: config.playlist_id || '',
-      api_key: config.api_key || '',
-      autoplay: config.autoplay !== undefined ? config.autoplay : 0,
-      controls: config.controls !== undefined ? config.controls : 1,
-      loop: config.loop !== undefined ? config.loop : 0,
-      mute: config.mute !== undefined ? config.mute : 0,
-      start: config.start || 0,
-      end: config.end || 0,
-      modestbranding: config.modestbranding !== undefined ? config.modestbranding : 0,
-      rel: config.rel !== undefined ? config.rel : 0,
-      showinfo: config.showinfo !== undefined ? config.showinfo : 1,
-      fs: config.fs !== undefined ? config.fs : 1,
-      cc_load_policy: config.cc_load_policy !== undefined ? config.cc_load_policy : 0,
-      iv_load_policy: config.iv_load_policy !== undefined ? config.iv_load_policy : 1,
-      color: config.color || 'red',
-      height: config.height || 315,
-      width: config.width || '100%',
-      ...config
-    };
-    this._render();
-    this._loadYouTubeAPI();
+
+  getCardSize() {
+    return 6;
   }
-  _loadYouTubeAPI() {
-    // Check if YouTube IFrame API is already loaded
-    if (window.YT && window.YT.Player) {
-      this._initPlayer();
-      return;
-    }
-    // Check if API is being loaded
-    if (!window.YouTubeIframeAPILoading) {
-      window.YouTubeIframeAPILoading = true;
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    }
-    // Wait for API to load
-    const checkAPI = setInterval(() => {
-      if (window.YT && window.YT.Player) {
-        clearInterval(checkAPI);
-        this._initPlayer();
-      }
-    }, 100);
-  }
-  _initPlayer() {
-    const playerElement = this.shadowRoot?.querySelector(`#${this._playerId}`);
-    console.log('YouTube Card: Player element lookup:', {
-      playerReady: this._playerReady,
-      hasElement: !!playerElement,
-      hasShadowRoot: !!this.shadowRoot,
-      shadowRootMode: this.shadowRoot?.mode,
-      elementFound: playerElement
-    });
-    if (this._playerReady || !playerElement) {
-      return;
-    }
-    const playerVars = {
-      autoplay: this._config.autoplay,
-      controls: this._config.controls,
-      loop: this._config.loop,
-      mute: this._config.mute,
-      modestbranding: this._config.modestbranding,
-      rel: this._config.rel,
-      showinfo: this._config.showinfo,
-      fs: this._config.fs,
-      cc_load_policy: this._config.cc_load_policy,
-      iv_load_policy: this._config.iv_load_policy,
-      color: this._config.color,
-    };
-    // Add start and end times if specified
-    if (this._config.start > 0) {
-      playerVars.start = this._config.start;
-    }
-    if (this._config.end > 0) {
-      playerVars.end = this._config.end;
-    }
-    const playerConfig = {
-      height: this._config.height,
-      width: '100%',
-      playerVars: playerVars,
-      events: {
-        'onReady': this._onPlayerReady.bind(this),
-        'onStateChange': this._onPlayerStateChange.bind(this),
-        'onError': this._onPlayerError.bind(this)
-      }
-    };
-    // Add video or playlist
-    if (this._config.playlist_id) {
-      playerConfig.playerVars.listType = 'playlist';
-      playerConfig.playerVars.list = this._config.playlist_id;
-    } else if (this._config.video_id) {
-      playerConfig.videoId = this._config.video_id;
-      // If loop is enabled for a single video, we need to add playlist parameter
-      if (this._config.loop === 1) {
-        playerConfig.playerVars.playlist = this._config.video_id;
-      }
-    }
-    try {
-      console.log('YouTube Card: Attempting to create player with config:', {
-        playerId: this._playerId,
-        videoId: this._config.video_id,
-        playlistId: this._config.playlist_id,
-        height: this._config.height
-      });
-      // Pass the actual DOM element, not the ID, since it's in a shadow root
-      this._player = new YT.Player(playerElement, playerConfig);
-    } catch (error) {
-      console.error('Error creating YouTube player:', error);
-    }
-  }
-  _onPlayerReady(event) {
-    this._playerReady = true;
-  }
-  _onPlayerStateChange(event) {
-    // Handle player state changes if needed
-  }
-  _onPlayerError(event) {
-    console.error('YouTube player error:', event.data);
-    let errorMessage = 'An error occurred';
-    switch (event.data) {
-      case 2:
-        errorMessage = 'Invalid video ID or playlist ID';
-        break;
-      case 5:
-        errorMessage = 'HTML5 player error';
-        break;
-      case 100:
-        errorMessage = 'Video not found or private';
-        break;
-      case 101:
-      case 150:
-        errorMessage = 'Video cannot be embedded';
-        break;
-    }
-    const errorDiv = this.querySelector('.error-message');
-    if (errorDiv) {
-      errorDiv.textContent = errorMessage;
-      errorDiv.style.display = 'block';
-    }
-  }
+
   _render() {
-    if (!this.shadowRoot) {
-      this.attachShadow({ mode: 'open' });
-    }
+    const aspectRatios = {
+      '16:9': '56.25%',
+      '4:3': '75%',
+      '1:1': '100%',
+      '21:9': '42.86%'
+    };
+
+    const paddingBottom = aspectRatios[this._config.aspect_ratio] || '56.25%';
+
     this.shadowRoot.innerHTML = `
       <style>
-        :host {
-          display: block;
-        }
         ha-card {
           padding: 16px;
-          position: relative;
+          background: var(--card-background-color);
+          border-radius: var(--ha-card-border-radius, 12px);
+          box-shadow: var(--ha-card-box-shadow, none);
         }
         .card-header {
-          font-family: var(--paper-font-headline_-_font-family);
-          -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing);
-          font-size: var(--paper-font-headline_-_font-size);
-          font-weight: var(--paper-font-headline_-_font-weight);
-          letter-spacing: var(--paper-font-headline_-_letter-spacing);
-          line-height: var(--paper-font-headline_-_line-height);
+          font-size: 24px;
+          font-weight: 500;
+          padding-bottom: 12px;
           color: var(--primary-text-color);
-          padding: 0 0 16px 0;
-          margin: 0;
         }
         .video-container {
           position: relative;
           width: 100%;
-          padding-bottom: ${(this._config.height / parseInt(this._config.width) * 100) || 56.25}%;
-          height: 0;
+          padding-bottom: ${paddingBottom};
+          background: #000;
+          border-radius: 8px;
           overflow: hidden;
         }
-        .video-container iframe,
-        .video-container #${this._playerId} {
+        .video-player {
           position: absolute;
           top: 0;
           left: 0;
@@ -202,248 +106,124 @@ class YouTubeVideoCard extends HTMLElement {
           height: 100%;
         }
         .error-message {
-          display: none;
-          color: var(--error-color, #ff0000);
+          color: var(--error-color);
           padding: 8px;
-          margin-top: 8px;
-          background: var(--error-background-color, #ffebee);
-          border-radius: 4px;
-        }
-        .loading {
-          text-align: center;
-          padding: 20px;
-          color: var(--secondary-text-color);
+          display: none;
         }
       </style>
       <ha-card>
         ${this._config.title ? `<div class="card-header">${this._config.title}</div>` : ''}
         <div class="video-container">
-          <div id="${this._playerId}"></div>
+          <div class="video-player"></div>
         </div>
         <div class="error-message"></div>
       </ha-card>
     `;
   }
-  getCardSize() {
-    return Math.ceil(this._config.height / 50) || 3;
-  }
-  getGridOptions() {
-    const rows = Math.ceil(this._config.height / 56) || 6;
-    return {
-      rows: rows,
-      columns: 12,
-      min_rows: 3,
-    };
-  }
-  static getConfigElement() {
-    return document.createElement('youtube-video-card-editor');
-  }
-  static getStubConfig() {
-    return {
-      video_id: 'dQw4w9WgXcQ',
-      title: 'YouTube Video'
-    };
-  }
-  static getPreviewHTML() {
-    return `
-      <div style="padding: 20px; text-align: center; background: var(--card-background-color); border: 1px solid var(--divider-color); border-radius: 8px;">
-        <div style="font-size: 48px; margin-bottom: 12px;">▶️</div>
-        <div style="font-weight: 500; font-size: 16px; color: var(--primary-text-color);">YouTube Video Card</div>
-        <div style="font-size: 14px; color: var(--secondary-text-color); margin-top: 8px;">Play YouTube videos and playlists</div>
-      </div>
-    `;
-  }
-}
-// Editor for the card
-class YouTubeVideoCardEditor extends HTMLElement {
-  constructor() {
-    super();
-    this._config = {};
-  }
-  set hass(hass) {
-    this._hass = hass;
-  }
-  setConfig(config) {
-    this._config = { ...config };
-    this._render();
-  }
-  _render() {
-    if (!this.shadowRoot) {
-      this.attachShadow({ mode: 'open' });
+
+  _loadYouTubeAPI() {
+    if (window.YT && window.YT.Player) {
+      this._initPlayer();
+      return;
     }
-    this.shadowRoot.innerHTML = `
-      <style>
-        .card-config {
-          padding: 16px;
-        }
-        .option {
-          display: flex;
-          align-items: center;
-          margin: 8px 0;
-        }
-        .option label {
-          flex: 1;
-          padding-right: 8px;
-        }
-        .option input[type="text"],
-        .option input[type="number"],
-        .option select {
-          flex: 2;
-          padding: 8px;
-          border: 1px solid var(--divider-color);
-          border-radius: 4px;
-          background: var(--primary-background-color);
-          color: var(--primary-text-color);
-        }
-        .option input[type="checkbox"] {
-          width: 20px;
-          height: 20px;
-        }
-        .section-header {
-          font-weight: bold;
-          margin-top: 16px;
-          margin-bottom: 8px;
-          padding-top: 8px;
-          border-top: 1px solid var(--divider-color);
-        }
-        .help-text {
-          font-size: 0.9em;
-          color: var(--secondary-text-color);
-          margin-left: 8px;
-        }
-      </style>
-      <div class="card-config">
-        <div class="section-header">Basic Settings</div>
-        <div class="option">
-          <label for="title">Title</label>
-          <input type="text" id="title" value="${this._config.title || ''}">
-        </div>
-        <div class="option">
-          <label for="video_id">Video ID <span class="help-text">(e.g., dQw4w9WgXcQ)</span></label>
-          <input type="text" id="video_id" value="${this._config.video_id || ''}">
-        </div>
-        <div class="option">
-          <label for="playlist_id">Playlist ID <span class="help-text">(e.g., PLhXT4p7YVEn13...)</span></label>
-          <input type="text" id="playlist_id" value="${this._config.playlist_id || ''}">
-        </div>
-        <div class="option">
-          <label for="api_key">API Key <span class="help-text">(optional)</span></label>
-          <input type="text" id="api_key" value="${this._config.api_key || ''}">
-        </div>
-        <div class="section-header">Display Settings</div>
-        <div class="option">
-          <label for="height">Height (px)</label>
-          <input type="number" id="height" value="${this._config.height || 315}">
-        </div>
-        <div class="section-header">Player Parameters</div>
-        <div class="option">
-          <label for="autoplay">Autoplay</label>
-          <input type="checkbox" id="autoplay" ${this._config.autoplay === 1 ? 'checked' : ''}>
-        </div>
-        <div class="option">
-          <label for="controls">Show Controls</label>
-          <input type="checkbox" id="controls" ${this._config.controls !== 0 ? 'checked' : ''}>
-        </div>
-        <div class="option">
-          <label for="loop">Loop</label>
-          <input type="checkbox" id="loop" ${this._config.loop === 1 ? 'checked' : ''}>
-        </div>
-        <div class="option">
-          <label for="mute">Mute</label>
-          <input type="checkbox" id="mute" ${this._config.mute === 1 ? 'checked' : ''}>
-        </div>
-        <div class="option">
-          <label for="modestbranding">Modest Branding</label>
-          <input type="checkbox" id="modestbranding" ${this._config.modestbranding === 1 ? 'checked' : ''}>
-        </div>
-        <div class="option">
-          <label for="rel">Show Related Videos</label>
-          <input type="checkbox" id="rel" ${this._config.rel !== 0 ? 'checked' : ''}>
-        </div>
-        <div class="option">
-          <label for="fs">Fullscreen Button</label>
-          <input type="checkbox" id="fs" ${this._config.fs !== 0 ? 'checked' : ''}>
-        </div>
-        <div class="option">
-          <label for="cc_load_policy">Show Closed Captions</label>
-          <input type="checkbox" id="cc_load_policy" ${this._config.cc_load_policy === 1 ? 'checked' : ''}>
-        </div>
-        <div class="option">
-          <label for="color">Progress Bar Color</label>
-          <select id="color">
-            <option value="red" ${this._config.color === 'red' ? 'selected' : ''}>Red</option>
-            <option value="white" ${this._config.color === 'white' ? 'selected' : ''}>White</option>
-          </select>
-        </div>
-        <div class="option">
-          <label for="start">Start Time (seconds)</label>
-          <input type="number" id="start" value="${this._config.start || 0}">
-        </div>
-        <div class="option">
-          <label for="end">End Time (seconds)</label>
-          <input type="number" id="end" value="${this._config.end || 0}">
-        </div>
-      </div>
-    `;
-    // Add event listeners after rendering
-    this.shadowRoot.querySelectorAll('input, select').forEach(element => {
-      if (element.type === 'checkbox') {
-        element.addEventListener('change', this._checkboxChanged.bind(this));
-      } else {
-        element.addEventListener('input', this._valueChanged.bind(this));
+
+    if (this._apiLoaded) {
+      return;
+    }
+
+    this._apiLoaded = true;
+
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    const checkYT = setInterval(() => {
+      if (window.YT && window.YT.Player) {
+        clearInterval(checkYT);
+        this._initPlayer();
       }
-    });
+    }, 100);
+
+    setTimeout(() => {
+      clearInterval(checkYT);
+      if (!window.YT || !window.YT.Player) {
+        this._showError('Failed to load YouTube API');
+      }
+    }, 10000);
   }
-  _valueChanged(ev) {
-    if (!this._config) {
+
+  _initPlayer() {
+    const playerElement = this.shadowRoot.querySelector('.video-player');
+    if (!playerElement) {
       return;
     }
-    const target = ev.target;
-    const value = target.type === 'number' ? parseInt(target.value) || 0 : target.value;
-    if (this._config[target.id] === value) {
-      return;
-    }
-    this._config = {
-      ...this._config,
-      [target.id]: value
+
+    const playerVars = {
+      autoplay: this._config.autoplay ? 1 : 0,
+      controls: this._config.controls ? 1 : 0,
+      loop: this._config.loop ? 1 : 0,
+      mute: this._config.mute ? 1 : 0,
+      modestbranding: this._config.modestbranding ? 1 : 0,
+      rel: this._config.rel ? 1 : 0,
+      showinfo: this._config.showinfo ? 1 : 0,
+      fs: this._config.fs ? 1 : 0,
+      cc_load_policy: this._config.cc_load_policy,
+      iv_load_policy: this._config.iv_load_policy,
+      color: this._config.color,
+      enablejsapi: 1,
+      origin: window.location.origin
     };
-    this._fireConfigChanged();
-  }
-  _checkboxChanged(ev) {
-    if (!this._config) {
-      return;
+
+    if (this._config.start_time) {
+      playerVars.start = this._config.start_time;
     }
-    const target = ev.target;
-    const value = target.checked ? 1 : 0;
-    this._config = {
-      ...this._config,
-      [target.id]: value
+    if (this._config.end_time) {
+      playerVars.end = this._config.end_time;
+    }
+
+    const playerConfig = {
+      width: '100%',
+      height: '100%',
+      playerVars: playerVars,
+      events: {
+        onError: (event) => this._onPlayerError(event)
+      }
     };
-    this._fireConfigChanged();
+
+    if (this._config.video_id) {
+      playerConfig.videoId = this._config.video_id;
+    } else if (this._config.playlist_id) {
+      playerConfig.playerVars.list = this._config.playlist_id;
+      playerConfig.playerVars.listType = 'playlist';
+    }
+
+    try {
+      this._player = new YT.Player(playerElement, playerConfig);
+    } catch (error) {
+      this._showError('Failed to initialize player: ' + error.message);
+    }
   }
-  _fireConfigChanged() {
-    const event = new CustomEvent('config-changed', {
-      detail: { config: this._config },
-      bubbles: true,
-      composed: true
-    });
-    this.dispatchEvent(event);
+
+  _onPlayerError(event) {
+    const errorMessages = {
+      2: 'Invalid video ID',
+      5: 'HTML5 player error',
+      100: 'Video not found',
+      101: 'Video not allowed to be played in embedded players',
+      150: 'Video not allowed to be played in embedded players'
+    };
+    this._showError(errorMessages[event.data] || 'Unknown error');
+  }
+
+  _showError(message) {
+    const errorElement = this.shadowRoot.querySelector('.error-message');
+    if (errorElement) {
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
   }
 }
-// Define custom elements
+
 customElements.define('youtube-video-card', YouTubeVideoCard);
-customElements.define('youtube-video-card-editor', YouTubeVideoCardEditor);
-// Register card for the card picker
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'custom:youtube-video-card',
-  name: 'YouTube Video Card',
-  description: 'Display YouTube videos and playlists in your dashboard',
-  preview: false,
-  documentationURL: 'https://github.com/loryanstrant/ha-youtubevideocard'
-});
-console.info(
-  `%c YOUTUBE-VIDEO-CARD %c Version 1.0.0 `,
-  'color: white; background: red; font-weight: 700;',
-  'color: red; background: white; font-weight: 700;'
-);
+console.log('YouTube Video Card v1.0.1 loaded');

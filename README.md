@@ -1,219 +1,134 @@
 # YouTube Video Card for Home Assistant
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![GitHub release](https://img.shields.io/github/release/loryanstrant/ha-youtubevideocard.svg)](https://github.com/loryanstrant/ha-youtubevideocard/releases)
-[![License](https://img.shields.io/github/license/loryanstrant/ha-youtubevideocard.svg)](LICENSE)
-[![Validate](https://github.com/loryanstrant/ha-youtubevideocard/actions/workflows/validate.yml/badge.svg)](https://github.com/loryanstrant/ha-youtubevideocard/actions/workflows/validate.yml)
-
-A custom Home Assistant card that allows you to play YouTube videos and playlists directly in your dashboard using the YouTube IFrame API.
-
-## Features
-
-- ✨ Play individual YouTube videos
-- 📋 Play YouTube playlists
-- 🎛️ Full support for YouTube player parameters
-- 🎨 Seamless integration with Home Assistant design
-- ⚙️ Visual configuration editor
-- 📱 Responsive design
-- 🔧 HACS compatible
+A custom card for Home Assistant that allows you to embed and play YouTube videos and playlists directly in your dashboard.
 
 ## Installation
 
 ### HACS (Recommended)
 
-1. Open HACS in your Home Assistant instance
-2. Click on "Frontend" in the HACS panel
-3. Click the "+" button in the bottom right corner
+1. Open HACS in Home Assistant
+2. Go to "Frontend"
+3. Click "+ Explore & Download Repositories"
 4. Search for "YouTube Video Card"
-5. Click "Install"
+5. Click "Download"
 6. Restart Home Assistant
 
-### Manual Installation
+### Manual
 
-1. Download `youtube-video-card.js` from the [latest release](https://github.com/loryanstrant/ha-youtubevideocard/releases)
-2. Copy the file to your `config/www` folder
-3. Add the resource to your dashboard:
-   - Go to Settings → Dashboards → Resources
-   - Click "Add Resource"
+1. Download `youtube-video-card.js` from the latest release
+2. Copy to `config/www/` directory
+3. Add resource in Configuration → Lovelace Dashboards → Resources:
    - URL: `/local/youtube-video-card.js`
-   - Resource Type: `JavaScript Module`
-4. Restart Home Assistant
+   - Type: JavaScript Module
 
-## Configuration
+## Usage
 
-### Visual Editor
+**Note:** This card must be added via YAML editor, not the UI card picker.
 
-The easiest way to configure the card is through the visual editor:
-
-1. Add a new card to your dashboard
-2. Search for "YouTube Video Card"
-3. Configure using the visual editor
-
-### YAML Configuration
+### Basic Configuration
 
 ```yaml
 type: custom:youtube-video-card
-title: My YouTube Video
 video_id: dQw4w9WgXcQ
-autoplay: 0
-controls: 1
-height: 315
 ```
 
-### Configuration Options
+### Playlist Configuration
 
-#### Basic Settings
+```yaml
+type: custom:youtube-video-card
+playlist_id: PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf
+```
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `type` | string | **Required** | Must be `custom:youtube-video-card` |
-| `title` | string | `YouTube Video` | Card title |
-| `video_id` | string | | YouTube video ID (e.g., `dQw4w9WgXcQ` from `https://www.youtube.com/watch?v=dQw4w9WgXcQ`) |
-| `playlist_id` | string | | YouTube playlist ID (e.g., `PLhXT4p7YVEn13Qn8AzzJ67PaIsKoodGlH` from `https://www.youtube.com/playlist?list=PLhXT4p7YVEn13Qn8AzzJ67PaIsKoodGlH`) |
-| `api_key` | string | | YouTube Data API key (optional, for future features) |
-
-**Note:** Either `video_id` or `playlist_id` is required.
-
-#### Display Settings
+## Configuration Options
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `height` | number | `315` | Player height in pixels |
-| `width` | string | `100%` | Player width (use `100%` for responsive) |
-
-#### Player Parameters
-
-All [YouTube player parameters](https://developers.google.com/youtube/player_parameters) are supported:
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `autoplay` | number | `0` | Auto-play video on load (0 or 1) |
-| `controls` | number | `1` | Show player controls (0 or 1) |
-| `loop` | number | `0` | Loop the video (0 or 1) |
-| `mute` | number | `0` | Mute the video (0 or 1) |
-| `modestbranding` | number | `0` | Use modest YouTube branding (0 or 1) |
-| `rel` | number | `0` | Show related videos at end (0 or 1) |
-| `fs` | number | `1` | Show fullscreen button (0 or 1) |
-| `cc_load_policy` | number | `0` | Show closed captions by default (0 or 1) |
-| `iv_load_policy` | number | `1` | Show video annotations (1 or 3) |
-| `color` | string | `red` | Progress bar color (`red` or `white`) |
-| `start` | number | `0` | Start time in seconds |
-| `end` | number | `0` | End time in seconds |
+| `type` | string | **required** | `custom:youtube-video-card` |
+| `video_id` | string | - | YouTube video ID |
+| `playlist_id` | string | - | YouTube playlist ID |
+| `title` | string | - | Optional card title |
+| `autoplay` | boolean | `false` | Start playing automatically |
+| `controls` | boolean | `true` | Show player controls |
+| `loop` | boolean | `false` | Loop the video |
+| `mute` | boolean | `false` | Mute audio |
+| `start_time` | number | `0` | Start time in seconds |
+| `end_time` | number | `0` | End time in seconds (0 = play to end) |
+| `aspect_ratio` | string | `16:9` | Aspect ratio: `16:9`, `4:3`, `1:1`, or `21:9` |
+| `modestbranding` | boolean | `false` | Minimize YouTube branding |
+| `rel` | boolean | `false` | Show related videos |
+| `showinfo` | boolean | `true` | Show video information |
+| `fs` | boolean | `true` | Allow fullscreen |
+| `cc_load_policy` | number | `0` | Closed captions: `0` (off) or `1` (on) |
+| `iv_load_policy` | number | `1` | Annotations: `1` (show) or `3` (hide) |
+| `color` | string | `red` | Progress bar color: `red` or `white` |
 
 ## Examples
 
-### Single Video
+### Simple Video
 
 ```yaml
 type: custom:youtube-video-card
-title: Rick Astley - Never Gonna Give You Up
 video_id: dQw4w9WgXcQ
-autoplay: 0
-controls: 1
-height: 315
+title: Rick Roll
+controls: true
+```
+
+### Autoplay with Custom Aspect Ratio
+
+```yaml
+type: custom:youtube-video-card
+video_id: M7lc1UVf-VE
+autoplay: true
+mute: true
+aspect_ratio: 21:9
 ```
 
 ### Playlist
 
 ```yaml
 type: custom:youtube-video-card
-title: My Favorite Playlist
-playlist_id: PLhXT4p7YVEn13Qn8AzzJ67PaIsKoodGlH
-autoplay: 0
-controls: 1
-height: 400
+playlist_id: PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf
+title: My Favorite Videos
+loop: true
 ```
 
-### Auto-Playing Muted Video
+### Time-Limited Playback
 
 ```yaml
 type: custom:youtube-video-card
-title: Background Video
 video_id: dQw4w9WgXcQ
-autoplay: 1
-mute: 1
-controls: 0
-loop: 1
-height: 250
+start_time: 30
+end_time: 90
+loop: true
 ```
 
-### Video with Start and End Times
+## Finding YouTube IDs
 
-```yaml
-type: custom:youtube-video-card
-title: Video Clip
-video_id: dQw4w9WgXcQ
-start: 30
-end: 60
-controls: 1
-height: 315
-```
+### Video ID
+From the URL `https://www.youtube.com/watch?v=dQw4w9WgXcQ`
+- The video ID is: `dQw4w9WgXcQ`
+
+### Playlist ID
+From the URL `https://www.youtube.com/playlist?list=PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf`
+- The playlist ID is: `PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf`
 
 ## Troubleshooting
 
-### Video Not Loading
+### Card doesn't appear in UI picker
+This is expected behavior. The card must be added via the YAML editor due to Home Assistant's scoped custom element registry architecture.
 
-1. **Check Video ID**: Ensure the video ID is correct. You can find it in the YouTube URL after `v=`
-2. **Embedding Restrictions**: Some videos cannot be embedded due to copyright or privacy settings
-3. **Network Issues**: Check your Home Assistant instance can access YouTube
+### Video doesn't load
+- Verify the video/playlist ID is correct
+- Check that the video is not age-restricted or private
+- Ensure you have an internet connection
 
-### Player Not Appearing
-
-1. **Clear Browser Cache**: Clear your browser cache and reload the page
-2. **Check Resources**: Ensure the card is properly added as a resource in your dashboard settings
-3. **Console Errors**: Open browser developer tools and check for JavaScript errors
-
-### Card Not in Picker
-
-1. **Restart Required**: Restart Home Assistant after installation
-2. **Resource Type**: Ensure the resource type is set to "JavaScript Module"
-3. **Path Correct**: Verify the resource path is correct
-
-## Development
-
-This card is built using:
-- YouTube IFrame API
-- Web Components / Custom Elements
-- Home Assistant Custom Card API
-
-### Build and Validation
-
-This repository includes GitHub Actions workflows for:
-- **HACS Validation**: Ensures the card meets HACS requirements
-- **CodeQL Analysis**: Security and code quality scanning
-- **Release Automation**: Automatically handles releases and asset uploads
-
-### Contributing
-
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-See also:
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Security Policy](SECURITY.md)
-
-## Support
-
-If you encounter issues:
-1. Check the [Issues](https://github.com/loryanstrant/ha-youtubevideocard/issues) page
-2. Create a new issue with:
-   - Home Assistant version
-   - Browser and version
-   - Card configuration
-   - Console errors (if any)
+### Video shows "not allowed to be played in embedded players"
+Some videos have embedding disabled by their uploaders. Try a different video.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details
+MIT License - see [LICENSE](LICENSE) file
 
 ## Credits
 
 Created by Loryan Strant
-
-## Changelog
-
-### 1.0.0
-- Initial release
-- Support for single videos and playlists
-- Full YouTube player parameter support
-- Visual configuration editor
-- HACS compatible
