@@ -3,6 +3,7 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 [![GitHub release](https://img.shields.io/github/release/loryanstrant/ha-youtubevideocard.svg)](https://github.com/loryanstrant/ha-youtubevideocard/releases)
 [![License](https://img.shields.io/github/license/loryanstrant/ha-youtubevideocard.svg)](LICENSE)
+[![Validate](https://github.com/loryanstrant/ha-youtubevideocard/actions/workflows/validate.yml/badge.svg)](https://github.com/loryanstrant/ha-youtubevideocard/actions/workflows/validate.yml)
 
 A custom Home Assistant card that allows you to play YouTube videos and playlists directly in your dashboard using the YouTube IFrame API.
 
@@ -175,9 +176,20 @@ This card is built using:
 - Web Components / Custom Elements
 - Home Assistant Custom Card API
 
+### Build and Validation
+
+This repository includes GitHub Actions workflows for:
+- **HACS Validation**: Ensures the card meets HACS requirements
+- **CodeQL Analysis**: Security and code quality scanning
+- **Release Automation**: Automatically handles releases and asset uploads
+
 ### Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+See also:
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
 
 ## Support
 
