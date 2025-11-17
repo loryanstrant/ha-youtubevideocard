@@ -13,24 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Ensure file exists
-        run: |
-          echo "Listing dist directory:"
-          ls -la ./dist || true
-          if [ ! -f ./dist/youtube-video-card.js ]; then
-            echo "ERROR: ./dist/youtube-video-card.js not found" >&2
-            exit 1
-          fi
-
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
+      - uses: actions/checkout@v3
+    
+      - uses: JasonEtco/upload-to-release@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/youtube-video-card.js
-          asset_name: youtube-video-card.js
-          asset_content_type: text/javascript
+          args: ./dist/youtube-video-card.js text/javascript
