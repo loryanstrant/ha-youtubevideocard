@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/loryanstrant/ha-youtubevideocard/issues"
   },
-  "homepage": "https://github.com/loryanstrant/ha-youtubevideocard#readme"
+  "homepage": "https://github.com/loryanstrant/ha-youtubevideocard#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
