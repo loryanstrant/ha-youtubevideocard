@@ -2,6 +2,12 @@
 
 A custom card for Home Assistant that allows you to embed and play YouTube videos and playlists directly in your dashboard.
 
+This was created because the regular way of embedding a video stopped working in early November 2025.
+
+<img width="749" height="299" alt="image" src="https://github.com/user-attachments/assets/bbb90ae1-350e-422d-be91-e7efc71d4d25" />
+
+
+
 ## Installation
 
 ### HACS (Recommended)
@@ -125,10 +131,13 @@ This is expected behavior. The card must be added via the YAML editor due to Hom
 ### Video shows "not allowed to be played in embedded players"
 Some videos have embedding disabled by their uploaders. Try a different video.
 
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Development Approach
+<img width="256" height="256" alt="Vibe Coding with GitHub Copilot 256x256" src="https://github.com/user-attachments/assets/bb41d075-6b3e-4f2b-a88e-94b2022b5d4f" />
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) file
-
-## Credits
-
-Created by Loryan Strant
