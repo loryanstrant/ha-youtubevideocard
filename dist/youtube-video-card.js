@@ -484,7 +484,7 @@ customElements.define('youtube-video-card-editor', YouTubeVideoCardEditor);
 // Register card for the card picker
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: 'youtube-video-card',
+  type: 'custom:youtube-video-card',
   name: 'YouTube Video Card',
   description: 'A card to play YouTube videos and playlists using the YouTube IFrame API',
   preview: false,
