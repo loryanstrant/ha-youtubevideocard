@@ -334,76 +334,76 @@ class YouTubeVideoCardEditor extends HTMLElement {
         
         <div class="option">
           <label for="title">Title</label>
-          <input type="text" id="title" .value="${this._config.title || ''}" @input="${this._valueChanged}">
+          <input type="text" id="title" value="${this._config.title || ''}">
         </div>
         
         <div class="option">
           <label for="video_id">Video ID <span class="help-text">(e.g., dQw4w9WgXcQ)</span></label>
-          <input type="text" id="video_id" .value="${this._config.video_id || ''}" @input="${this._valueChanged}">
+          <input type="text" id="video_id" value="${this._config.video_id || ''}">
         </div>
         
         <div class="option">
           <label for="playlist_id">Playlist ID <span class="help-text">(e.g., PLhXT4p7YVEn13...)</span></label>
-          <input type="text" id="playlist_id" .value="${this._config.playlist_id || ''}" @input="${this._valueChanged}">
+          <input type="text" id="playlist_id" value="${this._config.playlist_id || ''}">
         </div>
         
         <div class="option">
           <label for="api_key">API Key <span class="help-text">(optional)</span></label>
-          <input type="text" id="api_key" .value="${this._config.api_key || ''}" @input="${this._valueChanged}">
+          <input type="text" id="api_key" value="${this._config.api_key || ''}">
         </div>
         
         <div class="section-header">Display Settings</div>
         
         <div class="option">
           <label for="height">Height (px)</label>
-          <input type="number" id="height" .value="${this._config.height || 315}" @input="${this._valueChanged}">
+          <input type="number" id="height" value="${this._config.height || 315}">
         </div>
         
         <div class="section-header">Player Parameters</div>
         
         <div class="option">
           <label for="autoplay">Autoplay</label>
-          <input type="checkbox" id="autoplay" .checked="${this._config.autoplay === 1}" @change="${this._checkboxChanged}">
+          <input type="checkbox" id="autoplay" ${this._config.autoplay === 1 ? 'checked' : ''}>
         </div>
         
         <div class="option">
           <label for="controls">Show Controls</label>
-          <input type="checkbox" id="controls" .checked="${this._config.controls !== 0}" @change="${this._checkboxChanged}">
+          <input type="checkbox" id="controls" ${this._config.controls !== 0 ? 'checked' : ''}>
         </div>
         
         <div class="option">
           <label for="loop">Loop</label>
-          <input type="checkbox" id="loop" .checked="${this._config.loop === 1}" @change="${this._checkboxChanged}">
+          <input type="checkbox" id="loop" ${this._config.loop === 1 ? 'checked' : ''}>
         </div>
         
         <div class="option">
           <label for="mute">Mute</label>
-          <input type="checkbox" id="mute" .checked="${this._config.mute === 1}" @change="${this._checkboxChanged}">
+          <input type="checkbox" id="mute" ${this._config.mute === 1 ? 'checked' : ''}>
         </div>
         
         <div class="option">
           <label for="modestbranding">Modest Branding</label>
-          <input type="checkbox" id="modestbranding" .checked="${this._config.modestbranding === 1}" @change="${this._checkboxChanged}">
+          <input type="checkbox" id="modestbranding" ${this._config.modestbranding === 1 ? 'checked' : ''}>
         </div>
         
         <div class="option">
           <label for="rel">Show Related Videos</label>
-          <input type="checkbox" id="rel" .checked="${this._config.rel !== 0}" @change="${this._checkboxChanged}">
+          <input type="checkbox" id="rel" ${this._config.rel !== 0 ? 'checked' : ''}>
         </div>
         
         <div class="option">
           <label for="fs">Fullscreen Button</label>
-          <input type="checkbox" id="fs" .checked="${this._config.fs !== 0}" @change="${this._checkboxChanged}">
+          <input type="checkbox" id="fs" ${this._config.fs !== 0 ? 'checked' : ''}>
         </div>
         
         <div class="option">
           <label for="cc_load_policy">Show Closed Captions</label>
-          <input type="checkbox" id="cc_load_policy" .checked="${this._config.cc_load_policy === 1}" @change="${this._checkboxChanged}">
+          <input type="checkbox" id="cc_load_policy" ${this._config.cc_load_policy === 1 ? 'checked' : ''}>
         </div>
         
         <div class="option">
           <label for="color">Progress Bar Color</label>
-          <select id="color" @change="${this._valueChanged}">
+          <select id="color">
             <option value="red" ${this._config.color === 'red' ? 'selected' : ''}>Red</option>
             <option value="white" ${this._config.color === 'white' ? 'selected' : ''}>White</option>
           </select>
@@ -411,17 +411,17 @@ class YouTubeVideoCardEditor extends HTMLElement {
         
         <div class="option">
           <label for="start">Start Time (seconds)</label>
-          <input type="number" id="start" .value="${this._config.start || 0}" @input="${this._valueChanged}">
+          <input type="number" id="start" value="${this._config.start || 0}">
         </div>
         
         <div class="option">
           <label for="end">End Time (seconds)</label>
-          <input type="number" id="end" .value="${this._config.end || 0}" @input="${this._valueChanged}">
+          <input type="number" id="end" value="${this._config.end || 0}">
         </div>
       </div>
     `;
 
-    // Add event listeners
+    // Add event listeners after rendering
     this.shadowRoot.querySelectorAll('input, select').forEach(element => {
       if (element.type === 'checkbox') {
         element.addEventListener('change', this._checkboxChanged.bind(this));
