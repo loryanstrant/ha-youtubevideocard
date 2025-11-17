@@ -3,7 +3,5 @@
   "content_in_root": false,
   "filename": "youtube-video-card.js",
   "render_readme": true,
-  "homeassistant": "2023.4.0",
-  "domains": ["media_player"],
-  "iot_class": "Cloud Push"
+  "homeassistant": "2023.4.0"
 }
