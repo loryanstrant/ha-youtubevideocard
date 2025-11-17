@@ -1,0 +1,26 @@
+{
+  "name": "youtube-video-card",
+  "version": "1.0.1",
+  "description": "A custom card for Home Assistant that allows you to embed and play YouTube videos and playlists directly in your dashboard",
+  "main": "dist/youtube-video-card.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loryanstrant/ha-youtubevideocard.git"
+  },
+  "keywords": [
+    "home-assistant",
+    "homeassistant",
+    "hacs",
+    "lovelace",
+    "custom-card",
+    "youtube",
+    "video",
+    "playlist"
+  ],
+  "author": "Loryan Strant",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loryanstrant/ha-youtubevideocard/issues"
+  },
+  "homepage": "https://github.com/loryanstrant/ha-youtubevideocard#readme"
+}
