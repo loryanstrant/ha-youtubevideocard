@@ -257,12 +257,7 @@ class YouTubeVideoCard extends HTMLElement {
 
   static getStubConfig() {
     return {
-      title: 'YouTube Video',
-      video_id: '',
-      playlist_id: '',
-      autoplay: 0,
-      controls: 1,
-      height: 315
+      video_id: 'dQw4w9WgXcQ'
     };
   }
 }
