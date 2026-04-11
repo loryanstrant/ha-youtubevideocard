@@ -1,4 +1,4 @@
-// YouTube Video Card for Home Assistant v1.0.2
+// YouTube Video Card for Home Assistant v1.0.3
 class YouTubeVideoCard extends HTMLElement {
   constructor() {
     super();
@@ -19,6 +19,7 @@ class YouTubeVideoCard extends HTMLElement {
 
   setConfig(config) {
     this._config = {
+      borderless: config.borderless !== undefined ? config.borderless : false,
       video_id: config.video_id || '',
       playlist_id: config.playlist_id || '',
       autoplay: config.autoplay !== undefined ? config.autoplay : false,
@@ -76,41 +77,48 @@ class YouTubeVideoCard extends HTMLElement {
 
     const paddingBottom = aspectRatios[this._config.aspect_ratio] || '56.25%';
 
+    const borderless = this._config.borderless;
+
     this.shadowRoot.innerHTML = `
-      <style>
-        ha-card {
-          padding: 16px;
-          background: var(--card-background-color);
-          border-radius: var(--ha-card-border-radius, 12px);
-          box-shadow: var(--ha-card-box-shadow, none);
-        }
-        .card-header {
-          font-size: 24px;
-          font-weight: 500;
-          padding-bottom: 12px;
-          color: var(--primary-text-color);
-        }
-        .video-container {
-          position: relative;
-          width: 100%;
-          padding-bottom: ${paddingBottom};
-          background: #000;
-          border-radius: 8px;
-          overflow: hidden;
-        }
-        .video-player {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-        }
-        .error-message {
-          color: var(--error-color);
-          padding: 8px;
-          display: none;
-        }
-      </style>
+    <style>
+    ha-card {
+        padding: ${borderless ? '0' : '16px'};
+        background: ${borderless ? 'transparent' : 'var(--card-background-color)'};
+        border-radius: ${borderless ? '0' : 'var(--ha-card-border-radius, 12px)'};
+        box-shadow: ${borderless ? 'none' : 'var(--ha-card-box-shadow, none)'};
+    }
+
+    .card-header {
+        font-size: 24px;
+        font-weight: 500;
+        padding-bottom: 12px;
+        color: var(--primary-text-color);
+        display: ${borderless ? 'none' : 'block'};
+    }
+
+    .video-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: ${paddingBottom};
+        background: #000;
+        border-radius: ${borderless ? '0' : '8px'};
+        overflow: hidden;
+    }
+
+    .video-player {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .error-message {
+        color: var(--error-color);
+        padding: 8px;
+        display: none;
+    }
+    </style>
       <ha-card>
         ${this._config.title ? `<div class="card-header">${this._config.title}</div>` : ''}
         <div class="video-container">
@@ -226,4 +234,4 @@ class YouTubeVideoCard extends HTMLElement {
 }
 
 customElements.define('youtube-video-card', YouTubeVideoCard);
-console.log('YouTube Video Card v1.0.2 loaded');
+console.log('YouTube Video Card v1.0.3 loaded');
