@@ -67,6 +67,7 @@ playlist_id: PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf
 | `cc_load_policy` | number | `0` | Closed captions: `0` (off) or `1` (on) |
 | `iv_load_policy` | number | `1` | Annotations: `1` (show) or `3` (hide) |
 | `color` | string | `red` | Progress bar color: `red` or `white` |
+| `borderless` | boolean | `true` | Removes the border from around the video frame |
 
 ## Examples
 
