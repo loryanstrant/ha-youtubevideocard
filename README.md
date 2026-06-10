@@ -8,6 +8,24 @@ This was created because the regular way of embedding a video stopped working in
 
 
 
+## Screenshots
+
+On a dashboard — a borderless playlist alongside a single video:
+
+![YouTube Video Card on a dashboard](images/YouTube%20card%20both%20options.png)
+
+Add it straight from the card picker, with a live preview:
+
+![YouTube Video Card in the Add Card picker](images/YouTube%20card%20picker.png)
+
+Configure it with the visual editor (shown with the live preview):
+
+![YouTube Video Card visual editor with preview](images/YouTube%20card%20preview.png)
+
+…with toggles for every option:
+
+![YouTube Video Card options](images/YouTube%20card%20options.png)
+
 ## Installation
 
 ### HACS (Recommended)
@@ -29,7 +47,11 @@ This was created because the regular way of embedding a video stopped working in
 
 ## Usage
 
-**Note:** This card must be added via YAML editor, not the UI card picker.
+Add it straight from your dashboard's **+ Add Card** picker (search for "YouTube Video Card" — it shows a live preview), and configure it with the built-in **visual editor**. You can also edit the YAML directly.
+
+### Visual editor
+
+Choose the card from **+ Add Card**, then fill in the form: Video ID or Playlist ID, an optional title and aspect ratio, plus toggles for autoplay, mute, controls, loop, related videos, fullscreen, modest branding, play-inline, captions and borderless. Start/end times are there too.
 
 ### Basic Configuration
 
@@ -62,12 +84,13 @@ playlist_id: PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf
 | `aspect_ratio` | string | `16:9` | Aspect ratio: `16:9`, `4:3`, `1:1`, or `21:9` |
 | `modestbranding` | boolean | `false` | Minimize YouTube branding |
 | `rel` | boolean | `false` | Show related videos |
-| `showinfo` | boolean | `true` | Show video information |
 | `fs` | boolean | `true` | Allow fullscreen |
+| `playsinline` | boolean | `true` | Play inline on mobile (instead of native fullscreen) |
 | `cc_load_policy` | number | `0` | Closed captions: `0` (off) or `1` (on) |
-| `iv_load_policy` | number | `1` | Annotations: `1` (show) or `3` (hide) |
-| `color` | string | `red` | Progress bar color: `red` or `white` |
+| `hl` | string | - | Interface language (e.g. `en`, `de`) |
 | `borderless` | boolean | `true` | Removes the border from around the video frame |
+
+> **Removed options:** YouTube has deprecated/removed `showinfo`, `iv_load_policy` (annotations) and `color`. They're still accepted in your config so nothing breaks, but they no longer have any effect and are not sent to YouTube.
 
 ## Examples
 
@@ -121,8 +144,8 @@ From the URL `https://www.youtube.com/playlist?list=PLrAXtmErZgOeiKm4sgNOknGvNjb
 
 ## Troubleshooting
 
-### Card doesn't appear in UI picker
-This is expected behavior. The card must be added via the YAML editor due to Home Assistant's scoped custom element registry architecture.
+### "Error 153" / "Unknown error" on the player
+YouTube tightened its rules in late 2025: embedded players must send an HTTP `Referer`, or playback fails with **error 153**. This card sets `referrerpolicy="strict-origin-when-cross-origin"` on the player iframe, which satisfies that requirement. If you still see error 153, something in your setup is stripping the referrer — common causes are a privacy browser extension, a reverse proxy that removes the `Referer` header, or a `Referrer-Policy: no-referrer` set elsewhere.
 
 ### Video doesn't load
 - Verify the video/playlist ID is correct
