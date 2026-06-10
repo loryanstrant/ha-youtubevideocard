@@ -10,9 +10,21 @@ This was created because the regular way of embedding a video stopped working in
 
 ## Screenshots
 
-| On a dashboard | Card picker | Visual editor |
-|---|---|---|
-| ![YouTube Video Card on a dashboard](images/dashboard.png) | ![YouTube Video Card in the Add Card picker](images/picker.png) | ![YouTube Video Card visual editor](images/editor.png) |
+On a dashboard — a borderless playlist alongside a single video:
+
+![YouTube Video Card on a dashboard](images/YouTube%20card%20both%20options.png)
+
+Add it straight from the card picker, with a live preview:
+
+![YouTube Video Card in the Add Card picker](images/YouTube%20card%20picker.png)
+
+Configure it with the visual editor (shown with the live preview):
+
+![YouTube Video Card visual editor with preview](images/YouTube%20card%20preview.png)
+
+…with toggles for every option:
+
+![YouTube Video Card options](images/YouTube%20card%20options.png)
 
 ## Installation
 

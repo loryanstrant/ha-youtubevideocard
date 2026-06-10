@@ -4,6 +4,7 @@ class YouTubeVideoCard extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this._config = {};
+    this._player = null;
   }
 
   static getConfigElement() {
@@ -39,8 +40,8 @@ class YouTubeVideoCard extends HTMLElement {
       title: config.title || '',
       aspect_ratio: config.aspect_ratio || '16:9'
     };
-    // Note: showinfo, color, iv_load_policy, enablejsapi and origin are no longer
-    // sent - YouTube removed/deprecated them. Existing configs still load fine.
+    // Note: showinfo, color and iv_load_policy are no longer sent - YouTube
+    // removed/deprecated them. Existing configs still load fine.
 
     if (this.isConnected) {
       this._render();
@@ -49,6 +50,13 @@ class YouTubeVideoCard extends HTMLElement {
 
   connectedCallback() {
     this._render();
+  }
+
+  disconnectedCallback() {
+    if (this._player && typeof this._player.destroy === 'function') {
+      try { this._player.destroy(); } catch (e) { /* ignore */ }
+    }
+    this._player = null;
   }
 
   set hass(hass) {
@@ -81,6 +89,10 @@ class YouTubeVideoCard extends HTMLElement {
     if (c.hl) { params.set('hl', c.hl); }
     if (c.start_time) { params.set('start', String(c.start_time)); }
     if (c.end_time) { params.set('end', String(c.end_time)); }
+    // enablejsapi + origin let us attach YT.Player to this iframe for control
+    // (e.g. keeping a playlist muted across videos).
+    params.set('enablejsapi', '1');
+    params.set('origin', window.location.origin);
 
     let base;
     if (c.video_id) {
@@ -110,8 +122,8 @@ class YouTubeVideoCard extends HTMLElement {
     const src = this._buildEmbedUrl();
 
     // referrerpolicy is what fixes YouTube's "Error 153" (YouTube now requires a
-    // Referer from embedded players); a plain iframe lets us set it (the JS API
-    // could not). allow="autoplay" is required for the autoplay option to work.
+    // Referer from embedded players); building the iframe ourselves lets us set
+    // it - the JS API alone could not. allow="autoplay" is required for autoplay.
     const allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     const playerHtml = src
       ? `<iframe
@@ -171,6 +183,85 @@ class YouTubeVideoCard extends HTMLElement {
         </div>
       </ha-card>
     `;
+
+    if (src) {
+      this._attachPlayer();
+    }
+  }
+
+  _attachPlayer() {
+    const iframe = this.shadowRoot.querySelector('.video-player');
+    if (!iframe) {
+      return;
+    }
+    if (this._player && typeof this._player.destroy === 'function') {
+      try { this._player.destroy(); } catch (e) { /* ignore */ }
+      this._player = null;
+    }
+
+    const create = () => {
+      // The iframe already plays via its URL params; attaching YT.Player to the
+      // existing iframe (not a div) adds JS control while preserving our
+      // referrerpolicy. We use it to keep a muted playlist muted across videos.
+      const reassertMute = (event) => {
+        if (this._config.mute && event && event.target && typeof event.target.mute === 'function') {
+          event.target.mute();
+        }
+      };
+      try {
+        this._player = new YT.Player(iframe, {
+          events: {
+            onReady: reassertMute,
+            onStateChange: reassertMute,
+            onError: (event) => this._onPlayerError(event)
+          }
+        });
+      } catch (e) {
+        // If the API can't attach the iframe still plays via its URL params.
+      }
+    };
+
+    if (window.YT && window.YT.Player) {
+      create();
+    } else {
+      this._loadApi(create);
+    }
+  }
+
+  _loadApi(callback) {
+    if (!document.querySelector('script[data-youtube-iframe-api]')) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      tag.setAttribute('data-youtube-iframe-api', '1');
+      const first = document.getElementsByTagName('script')[0];
+      first.parentNode.insertBefore(tag, first);
+    }
+    let waited = 0;
+    const timer = setInterval(() => {
+      if (window.YT && window.YT.Player) {
+        clearInterval(timer);
+        callback();
+      } else if ((waited += 100) >= 10000) {
+        clearInterval(timer); // give up; the iframe still plays via URL params
+      }
+    }, 100);
+  }
+
+  _onPlayerError(event) {
+    const errorMessages = {
+      2: 'Invalid video ID',
+      5: 'HTML5 player error',
+      100: 'Video not found',
+      101: 'Video not allowed to be played in embedded players',
+      150: 'Video not allowed to be played in embedded players',
+      153: 'YouTube blocked the embed (missing referrer) - error 153'
+    };
+    const msg = errorMessages[event && event.data] || 'Unknown error';
+    const el = this.shadowRoot.querySelector('.error-message');
+    if (el) {
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
   }
 }
 
