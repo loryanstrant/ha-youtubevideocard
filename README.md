@@ -1,12 +1,20 @@
 # YouTube Video Card for Home Assistant
 
+[![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?style=flat-square)](https://github.com/hacs/integration)
+[![Release](https://img.shields.io/github/v/release/loryanstrant/ha-youtubevideocard?style=flat-square)](https://github.com/loryanstrant/ha-youtubevideocard/releases)
+[![Release date](https://img.shields.io/github/release-date/loryanstrant/ha-youtubevideocard?style=flat-square)](https://github.com/loryanstrant/ha-youtubevideocard/releases)
+[![Downloads](https://img.shields.io/github/downloads/loryanstrant/ha-youtubevideocard/total?style=flat-square)](https://github.com/loryanstrant/ha-youtubevideocard/releases)
+[![License](https://img.shields.io/github/license/loryanstrant/ha-youtubevideocard?style=flat-square)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/loryanstrant/ha-youtubevideocard?style=flat-square)](https://github.com/loryanstrant/ha-youtubevideocard/commits)
+[![Stars](https://img.shields.io/github/stars/loryanstrant/ha-youtubevideocard?style=flat-square)](https://github.com/loryanstrant/ha-youtubevideocard/stargazers)
+
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=loryanstrant&repository=ha-youtubevideocard&category=plugin)
+
 A custom card for Home Assistant that allows you to embed and play YouTube videos and playlists directly in your dashboard.
 
 This was created because the regular way of embedding a video stopped working in early November 2025.
 
 <img width="749" height="299" alt="image" src="https://github.com/user-attachments/assets/bbb90ae1-350e-422d-be91-e7efc71d4d25" />
-
-
 
 ## Screenshots
 
