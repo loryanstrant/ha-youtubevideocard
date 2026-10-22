@@ -1,0 +1,248 @@
+{
+  "schema_version": "1.0",
+  "repository": "ha-youtubevideocard",
+  "identity": {
+    "description": "A custom card for Home Assistant that allows you to embed and play YouTube videos and playlists directly in your dashboard.",
+    "default_branch": "main",
+    "languages": {
+      "JavaScript": 1
+    },
+    "topics": [],
+    "licence": "MIT License",
+    "file_count": 14
+  },
+  "start_here": {
+    "readme": "README.md",
+    "agents_md": "AGENTS.md",
+    "entry_points": [],
+    "decision_records": [],
+    "build_config": [
+      "hacs.json",
+      "package.json"
+    ],
+    "source_roots": [
+      "dist"
+    ]
+  },
+  "documentation": [
+    {
+      "path": ".github/copilot-instructions.md",
+      "title": "Copilot instructions — ha-youtubevideocard",
+      "lines": 28,
+      "headings": [
+        {
+          "level": 2,
+          "text": "What this repo is",
+          "anchor": "what-this-repo-is"
+        },
+        {
+          "level": 2,
+          "text": "Repo shape",
+          "anchor": "repo-shape"
+        },
+        {
+          "level": 2,
+          "text": "Conventions",
+          "anchor": "conventions"
+        },
+        {
+          "level": 2,
+          "text": "Never",
+          "anchor": "never"
+        }
+      ]
+    },
+    {
+      "path": "README.md",
+      "title": "YouTube Video Card for Home Assistant",
+      "lines": 175,
+      "headings": [
+        {
+          "level": 2,
+          "text": "Screenshots",
+          "anchor": "screenshots"
+        },
+        {
+          "level": 2,
+          "text": "Installation",
+          "anchor": "installation"
+        },
+        {
+          "level": 3,
+          "text": "HACS (Recommended)",
+          "anchor": "hacs-recommended"
+        },
+        {
+          "level": 3,
+          "text": "Manual",
+          "anchor": "manual"
+        },
+        {
+          "level": 2,
+          "text": "Usage",
+          "anchor": "usage"
+        },
+        {
+          "level": 3,
+          "text": "Visual editor",
+          "anchor": "visual-editor"
+        },
+        {
+          "level": 3,
+          "text": "Basic Configuration",
+          "anchor": "basic-configuration"
+        },
+        {
+          "level": 3,
+          "text": "Playlist Configuration",
+          "anchor": "playlist-configuration"
+        },
+        {
+          "level": 2,
+          "text": "Configuration Options",
+          "anchor": "configuration-options"
+        },
+        {
+          "level": 2,
+          "text": "Examples",
+          "anchor": "examples"
+        },
+        {
+          "level": 3,
+          "text": "Simple Video",
+          "anchor": "simple-video"
+        },
+        {
+          "level": 3,
+          "text": "Autoplay with Custom Aspect Ratio",
+          "anchor": "autoplay-with-custom-aspect-ratio"
+        },
+        {
+          "level": 3,
+          "text": "Playlist",
+          "anchor": "playlist"
+        },
+        {
+          "level": 3,
+          "text": "Time-Limited Playback",
+          "anchor": "time-limited-playback"
+        },
+        {
+          "level": 2,
+          "text": "Finding YouTube IDs",
+          "anchor": "finding-youtube-ids"
+        },
+        {
+          "level": 3,
+          "text": "Video ID",
+          "anchor": "video-id"
+        },
+        {
+          "level": 3,
+          "text": "Playlist ID",
+          "anchor": "playlist-id"
+        },
+        {
+          "level": 2,
+          "text": "Troubleshooting",
+          "anchor": "troubleshooting"
+        },
+        {
+          "level": 3,
+          "text": "\"Error 153\" / \"Unknown error\" on the player",
+          "anchor": "error-153--unknown-error-on-the-player"
+        },
+        {
+          "level": 3,
+          "text": "Video doesn't load",
+          "anchor": "video-doesnt-load"
+        },
+        {
+          "level": 3,
+          "text": "Video shows \"not allowed to be played in embedded players\"",
+          "anchor": "video-shows-not-allowed-to-be-played-in-embedded-players"
+        },
+        {
+          "level": 2,
+          "text": "Contributing",
+          "anchor": "contributing"
+        },
+        {
+          "level": 2,
+          "text": "Development Approach",
+          "anchor": "development-approach"
+        },
+        {
+          "level": 2,
+          "text": "License",
+          "anchor": "license"
+        }
+      ]
+    },
+    {
+      "path": "info.md",
+      "title": "YouTube Video Card",
+      "lines": 31,
+      "headings": [
+        {
+          "level": 2,
+          "text": "Features",
+          "anchor": "features"
+        },
+        {
+          "level": 2,
+          "text": "Quick Start",
+          "anchor": "quick-start"
+        },
+        {
+          "level": 2,
+          "text": "Documentation",
+          "anchor": "documentation"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "source_roots": [
+      "dist"
+    ],
+    "symbol_source": "repomix (tree-sitter signatures)",
+    "routes": [],
+    "files": [
+      {
+        "path": "dist/youtube-video-card.js",
+        "symbols": [
+          {
+            "kind": "class",
+            "name": "YouTubeVideoCard",
+            "parent": "",
+            "signature": "class YouTubeVideoCard extends HTMLElement"
+          },
+          {
+            "kind": "class",
+            "name": "YouTubeVideoCardEditor",
+            "parent": "",
+            "signature": "class YouTubeVideoCardEditor extends HTMLElement"
+          }
+        ]
+      }
+    ]
+  },
+  "tests": [],
+  "operations": [
+    ".github/workflows/build.yaml",
+    ".github/workflows/validate.yml"
+  ],
+  "limitations": {
+    "unparsed_languages": [],
+    "excluded_dirs": [],
+    "code_map_truncated": false,
+    "code_map_symbols_capped": false,
+    "tracked_files_only": true
+  },
+  "generated": {
+    "source_commit": "0e4e81b080b94e55e6770dc48dffff74ae6e242d",
+    "content_hash": "f2a8a0ee13768f92",
+    "generator": "navgen"
+  }
+}
