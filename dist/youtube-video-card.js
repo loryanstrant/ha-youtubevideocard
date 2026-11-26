@@ -1,4 +1,4 @@
-// YouTube Video Card for Home Assistant v2.0.0
+// YouTube Video Card for Home Assistant v2.0.1
 class YouTubeVideoCard extends HTMLElement {
   constructor() {
     super();
@@ -367,8 +367,8 @@ window.customCards.push({
   type: 'youtube-video-card',
   name: 'YouTube Video Card',
   description: 'Embed and play a YouTube video or playlist on your dashboard.',
-  preview: true,
+  preview: false,
   documentationURL: 'https://github.com/loryanstrant/ha-youtubevideocard'
 });
 
-console.log('YouTube Video Card v2.0.0 loaded');
+console.log('YouTube Video Card v2.0.1 loaded');
