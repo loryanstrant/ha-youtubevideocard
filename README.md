@@ -1,5 +1,7 @@
 # YouTube Video Card for Home Assistant
 
+This is a fork of the original by Loryan Strant (as below). It fixes a small issue to prevent the card picker jumping to this card, rickroll style (!), every time the card picker is opened.
+
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?style=flat-square)](https://github.com/hacs/integration)
 [![Release](https://img.shields.io/github/v/release/loryanstrant/ha-youtubevideocard?style=flat-square)](https://github.com/loryanstrant/ha-youtubevideocard/releases)
 [![Release date](https://img.shields.io/github/release-date/loryanstrant/ha-youtubevideocard?style=flat-square)](https://github.com/loryanstrant/ha-youtubevideocard/releases)
